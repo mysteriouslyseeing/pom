@@ -15,9 +15,10 @@ pub trait Set<T> {
 	}
 }
 
-impl<T: PartialEq> Set<T> for [T] {
+impl<T, S: PartialEq<T>> Set<T> for [S] {
 	fn contains(&self, elem: &T) -> bool {
-		(self as &[T]).contains(elem)
+		// Less efficient for T = u8 and T = i8 than slice::contains but more generic
+		self.iter().any(|s| s.eq(elem))
 	}
 }
 
@@ -125,5 +126,4 @@ mod test {
 		assert!(one_of(&(..)).parse(b"z").is_ok());
 		assert!(one_of(&(..)).parse(b"1").is_ok());
 	}
-
 }
